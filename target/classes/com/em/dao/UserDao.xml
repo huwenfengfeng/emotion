@@ -4,18 +4,45 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.em.dao.UserDao">
   <sql id="user">
-     id,
+     user_id,
+	 nickname,
 	 account,
 	 password,
-	 nickname,
-	 email,
+	 salt,
+	 state,
+	 user_pic,
 	 create_time,
 	 update_time
   </sql>
   
-  <select id="getUserById" resultType="user">
-      select 
-        <include refid="user" />
-      from user where account = #{account}
-  </select>
+  <resultMap id="userMap" type="User" >
+        <id property="userId" column="user_id" />
+        <result property="nickname" column="nickname" />
+        <result property="account" column="account" />
+        <result property="password" column="password" />
+        <result property="salt" column="salt" />
+        <result property="state" column="state" />
+        <result property="userPic" column="user_pic" />
+        <collection property="roleList" ofType="com.em.entity.SysRole" javaType="java.util.ArrayList">
+            <id property="id" column="id" />
+            <result property="role" column="role" />
+            <result property="description" column="description" />
+            <result property="available" column="available" javaType="java.lang.Boolean" />
+            <collection property="permissions" ofType="com.em.entity.SysPermission"  javaType="java.util.ArrayList">
+                <result property="name" column="name" />
+                <result property="resourceType" column="resource_type" />
+                <result property="url" column="url" />
+                <result property="permission" column="permission" />
+                <result property="parentId" column="parent_id" />
+                <result property="available" column="available" javaType="java.lang.Boolean" />
+            </collection>
+        </collection>
+    </resultMap>
+
+   <select id="findUserByName"  resultMap="userMap">
+       select u.*,r.*,p.* from user u LEFT JOIN sys_user_role ur on u.user_id = ur.uid
+        LEFT JOIN sys_role r on r.id = ur.role_id
+        LEFT JOIN sys_role_permission rp on r.id = rp.role_id LEFT JOIN sys_permission p on rp.permission_id = p.id  where account = #{account} and u.state = 0
+   </select>
+
 </mapper>

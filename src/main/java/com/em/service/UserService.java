@@ -12,8 +12,8 @@ public class UserService {
 	@Autowired
 	UserDao userDao;
 	
-	public User getUserById(String account){
-		return userDao.getUserById(account);
+	public User findUserByName(String account){
+		return userDao.findUserByName(account);
 	}
 	
 }

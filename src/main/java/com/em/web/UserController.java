@@ -1,22 +1,41 @@
 package com.em.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.em.common.RestResult;
-import com.em.entity.User;
-import com.em.service.UserService;
-
-@RestController
+@Controller
+@RequestMapping("/userInfo")
 public class UserController {
 
-	@Autowired
-	UserService userService;
-	
-	@GetMapping("/getUser")
-	public RestResult<User> getUserById(String account){
-		return RestResult.SUCCESS(userService.getUserById(account));
-	}
+	 /**
+     * 用户查询.
+     * @return
+     */
+    @RequestMapping("/userList")
+    @RequiresPermissions("userInfo:view")//权限管理;
+    public String userInfo(){
+        return "userInfo";
+    }
+
+    /**
+     * 用户添加;
+     * @return
+     */
+    @RequestMapping("/userAdd")
+    @RequiresPermissions("userInfo:add")//权限管理;
+    public String userInfoAdd(){
+        return "userInfoAdd";
+    }
+
+    /**
+     * 用户删除;
+     * @return
+     */
+    @RequestMapping("/userDel")
+    @RequiresPermissions("userInfo:del")//权限管理;
+    public String userDel(){
+        return "userInfoDel";
+    }
 	
 }

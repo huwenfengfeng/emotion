@@ -4,6 +4,6 @@ import com.em.entity.User;
 
 public interface UserDao {
 
-	User getUserById(String account);
+	User findUserByName(String account);
 	
 }
